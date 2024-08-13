@@ -12,6 +12,7 @@ export const dataSource = new DataSource({
   database: process.env.DB_NAME,
   entities: [process.env.DB_ENTITIES],
   migrations: [process.env.DB_MIGRATIONS],
+  migrationsTableName: 'migrations',
   synchronize: false,
   ssl: process.env.DB_SSL === 'true',
 });

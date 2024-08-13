@@ -28,7 +28,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = app.get<ConfigService>(ConfigService).get<number>('server.port');
+  const port =
+    app.get<ConfigService>(ConfigService).get<number>('PORT') || 3000;
   await app.listen(port);
 
   console.log({
@@ -37,7 +38,7 @@ async function bootstrap() {
     url: `http://localhost:${port}/api/v1`,
   });
 }
-bootstrap().catch((error) => {
+bootstrap().catch(error => {
   console.error('Error while boostraping', error);
   process.exit(1);
 });
