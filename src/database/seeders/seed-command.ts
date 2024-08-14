@@ -1,5 +1,5 @@
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "src/app.module";
+import { AppModule } from "../../app.module";
 import { SeederService } from "./seeder.service";
 
 async function boostrap() {
@@ -8,7 +8,6 @@ async function boostrap() {
 
     try {
         await seederService.seedUsers();
-        console.log('Seeding completed successfully');
     } catch (error){
         console.error('Seeding failed:', error);
     } finally {

@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { SeederModule } from './database/seeders/seeder.module';
+import { SeederService } from './database/seeders/seeder.service';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { SeederModule } from './database/seeders/seeder.module';
     SeederModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: 'CONFIG', useClass: ConfigService }],
+  providers: [AppService, SeederService, { provide: 'CONFIG', useClass: ConfigService }],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

@@ -4,12 +4,17 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { initializeDataSource } from './database/data-source';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { SeederService } from './database/seeders/seeder.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   try {
     await initializeDataSource();
     console.log('Data Source has been initialized!');
+
+    const seederService = app.get(SeederService);
+    const seedResult = await seederService.seedUsers();
+    console.log(seedResult);
   } catch (error) {
     console.error('Error during Data Source initialization', error);
     process.exit(1);
@@ -35,7 +40,8 @@ async function bootstrap() {
   console.log({
     message: 'server started 🚀',
     port,
-    url: `http://localhost:${port}/api/v1`,
+    server_url: `http://localhost:${port}/api/v1`,
+    swagger_docs_url: `http://localhost:${port}/api/docs`,
   });
 }
 bootstrap().catch(error => {
