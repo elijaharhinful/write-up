@@ -7,6 +7,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { SeederModule } from './database/seeders/seeder.module';
 import { SeederService } from './database/seeders/seeder.service';
+import { BlogModule } from './modules/blog/blog.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { BlogCategoriesModule } from './modules/blog-categories/blog-categories.module';
+import { BlogCommentsModule } from './modules/blog-comments/blog-comments.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { BlogCommentsModule } from './modules/blog-comments/blog-comments.module';
+import { BlogCategoriesModule } from './modules/blog-categories/blog-categories.module';
+import { BlogModule } from './modules/blog/blog.module';
+import { ProfileModule } from './modules/profile/profile.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +38,11 @@ import { SeederService } from './database/seeders/seeder.service';
     }),
     UserModule,
     SeederModule,
+    BlogModule,
+    ProfileModule,
+    BlogCategoriesModule,
+    BlogCommentsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeederService, { provide: 'CONFIG', useClass: ConfigService }],

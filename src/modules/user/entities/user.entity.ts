@@ -1,10 +1,12 @@
 import { AbstractBaseEntity } from "../../../entities/base.entity";
-import { Column, Entity } from "typeorm";
+import { Column, Entity, OneToOne, OneToMany, JoinColumn } from "typeorm";
+import { Profile } from "../../profile/entities/profile.entity";
+import { Blog } from "../../blog/entities/blog.entity";
 
 export enum UserRole {
     SUPER_ADMIN = 'super-admin',
     ADMIN = 'admin',
-    USER = 'vendor',
+    USER = 'user',
 }
 
 @Entity()
@@ -27,15 +29,22 @@ export class User extends AbstractBaseEntity {
     @Column({ nullable: false, default: true })
     isActive: boolean;
 
-    @Column({ nullable: false, default: UserRole.USER })
+    @Column({ nullable: false, type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole;
 
-    @Column({nullable: true})
-    googleId: string
+    @Column({ nullable: true, unique: true })
+    googleId: string;
 
-    @Column({nullable: true})
-    googleProfilePicture: string
+    @Column({ nullable: true })
+    googleProfilePicture: string;
 
-    @Column({nullable: true})
-    googleToken: string
+    @Column({ nullable: true })
+    googleToken: string;
+
+    @OneToOne(() => Profile)
+    @JoinColumn({ name: 'profileId' })
+    profile: Profile;
+
+    @OneToMany(() => Blog, blog => blog.user)
+    blogs: Blog[];
 }
