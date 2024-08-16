@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../../modules/user/entities/user.entity";
 import { Repository } from "typeorm";
 import { CustomInternalServerErrorException } from "../../helpers/custom-exceptions";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class SeederService {
@@ -30,6 +31,7 @@ export class SeederService {
                 try {
                     const existingUser = await this.userRepository.findOne({ where: { email: userData.email } });
                     if (!existingUser) {
+                        userData.password = await bcrypt.hash(userData.password,10);
                         const newUser = this.userRepository.create(userData);
                         await this.userRepository.save(newUser)
                         console.log(`User seeded: ${userData.email}`);

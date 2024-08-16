@@ -5,6 +5,7 @@ import { initializeDataSource } from './database/data-source';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { SeederService } from './database/seeders/seeder.service';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,7 +23,10 @@ async function bootstrap() {
   app.enable('trust proxy');
   app.enableCors();
   app.setGlobalPrefix('api/v1', { exclude: ['api/docs'] });
-
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+  }));
+  
   const options = new DocumentBuilder()
     .setTitle('Write-Up API Documentation')
     .setDescription('API documentation for Write-Up CMS app')

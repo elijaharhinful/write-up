@@ -12,11 +12,8 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { BlogCategoriesModule } from './modules/blog-categories/blog-categories.module';
 import { BlogCommentsModule } from './modules/blog-comments/blog-comments.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { BlogCommentsModule } from './modules/blog-comments/blog-comments.module';
-import { BlogCategoriesModule } from './modules/blog-categories/blog-categories.module';
-import { BlogModule } from './modules/blog/blog.module';
-import { ProfileModule } from './modules/profile/profile.module';
-import { AuthModule } from './modules/auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [
@@ -45,8 +42,12 @@ import { AuthModule } from './modules/auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SeederService, { provide: 'CONFIG', useClass: ConfigService }],
+  providers: [
+    AppService,
+    SeederService,
+    { provide: 'CONFIG', useClass: ConfigService },
+    { provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
 }
