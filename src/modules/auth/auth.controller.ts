@@ -15,7 +15,6 @@ export class AuthController {
   @Post('login')
   @ApiBody({type: LoginDTO})
   async login(@Request() req) {
-    console.log(req.user);
     return this.authService.login(req.user);
   }
 }

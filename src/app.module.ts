@@ -14,6 +14,7 @@ import { BlogCommentsModule } from './modules/blog-comments/blog-comments.module
 import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -30,6 +31,14 @@ import { AuthGuard } from './guards/auth.guard';
         entities: [configService.get('DB_ENTITIES')],
         migrations: [configService.get('DB_MIGRATIONS')],
         ssl: configService.get('DB_SSL') === 'true',
+      }),
+      inject: [ConfigService],
+    }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '1d' },
       }),
       inject: [ConfigService],
     }),
