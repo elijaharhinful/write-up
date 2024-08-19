@@ -15,6 +15,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { WinstonModule } from 'nest-winston';
+import { loggerConfig } from './config/logger.config';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
+    WinstonModule.forRoot(loggerConfig),
     UserModule,
     SeederModule,
     BlogModule,

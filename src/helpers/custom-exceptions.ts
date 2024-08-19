@@ -44,7 +44,7 @@ export class CustomNotFoundException extends NotFoundException{
 export class CustomInternalServerErrorException extends InternalServerErrorException{
     constructor(message: string = INTERNAL_SERVER_ERROR){
         super({
-            statusCode: HttpStatus.FORBIDDEN,
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
             error: INTERNAL_SERVER_ERROR,
             message,
         });

@@ -4,11 +4,16 @@ import { User } from '../../modules/user/entities/user.entity';
 import { SeederService } from './seeder.service';
 import { SeederController } from './seeder.controller';
 import { UserModule } from '../../modules/user/user.module';
+import { Profile } from '../../modules/profile/entities/profile.entity';
+import { Blog } from '../../modules/blog/entities/blog.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User]) , UserModule],
+    imports: [
+        TypeOrmModule.forFeature([User, Profile, Blog]),
+        UserModule,
+    ],
     providers: [SeederService],
     controllers: [SeederController],
 })
 
-export class SeederModule {}
+export class SeederModule { }
