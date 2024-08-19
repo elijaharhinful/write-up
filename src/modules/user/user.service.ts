@@ -22,6 +22,11 @@ export class UserService {
     return user;
   }
 
+  async getUserById(id: string): Promise<User | undefined> {
+    const user = await this.userRepository.findOne({where:{id}});
+    return user;
+  }
+
   updateUser(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }

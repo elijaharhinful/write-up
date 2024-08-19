@@ -41,6 +41,9 @@ export class User extends AbstractBaseEntity {
     @Column({ nullable: true })
     googleToken: string;
 
+    @Column({nullable: true})
+    isSeeded: boolean;
+
     @OneToOne(() => Profile, {nullable: true})
     @JoinColumn({ name: 'profileId' })
     profile: Profile;

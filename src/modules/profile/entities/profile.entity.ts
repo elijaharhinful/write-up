@@ -19,6 +19,9 @@ export class Profile extends AbstractBaseEntity {
     @Column({ nullable: true, default: 0 })
     followers: number;
 
+    @Column({nullable: true})
+    isSeeded: boolean;
+
     @OneToOne(() => User, user => user.profile)
     user: User;
 }

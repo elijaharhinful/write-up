@@ -7,7 +7,7 @@ async function boostrap() {
     const seederService = app.get(SeederService);
 
     try {
-        await seederService.seedUsers();
+        await seederService.seedDatabase();
     } catch (error){
         console.error('Seeding failed:', error);
     } finally {

@@ -16,7 +16,7 @@ async function bootstrap() {
     console.log('Data Source has been initialized!');
 
     const seederService = app.get(SeederService);
-    const seedResult = await seederService.seedUsers();
+    const seedResult = await seederService.seedDatabase();
     console.log(seedResult);
   } catch (error) {
     console.error('Error during Data Source initialization', error);
