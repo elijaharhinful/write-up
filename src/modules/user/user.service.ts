@@ -9,11 +9,12 @@ import { Repository } from 'typeorm';
 export class UserService {
   constructor (@InjectRepository(User) private userRepository: Repository<User>) {}
 
-  createUser(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
   }
 
-  getAllUsers() {
+  async getAllUsers() {
     return `This action returns all user`;
   }
 

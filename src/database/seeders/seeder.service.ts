@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../../modules/user/entities/user.entity";
 import { DataSource, QueryRunner, Repository } from "typeorm";
@@ -60,7 +60,7 @@ export class SeederService {
                 }
             }
         } else {
-            if (createdUsers.length === 0) { 
+            if (createdUsers.length === 0) {
                 this.logger.info('Users already seeded');
             }
             const allUsers = await queryRunner.manager.getRepository(User).find();
@@ -90,10 +90,18 @@ export class SeederService {
                     throw new CustomInternalServerErrorException('Error while seeding profile');
                 }
             };
-            return 'Profiles seeded successfully';
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Profiles seeded successfully',
+                data: [],
+            };
         }
         else {
-            return 'Profiles already seeded';
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Profiles already seeded',
+                data: [],
+            };
         }
     }
 
@@ -117,9 +125,17 @@ export class SeederService {
                     throw new CustomInternalServerErrorException('Error while seeding blogs')
                 }
             };
-            return 'Blogs seeded successfully';
+            return {
+                statusCode: HttpStatus.CREATED,
+                message: 'Blogs seeded successfully',
+                data: [],
+            };
         } else {
-            return 'Blogs already seed'
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'Blogs already seeded',
+                data: [],
+            };
         }
     }
 

@@ -1,14 +1,18 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { CustomUnauthorizedException } from '../../helpers/custom-exceptions';
+import { CustomInternalServerErrorException, CustomUnauthorizedException } from '../../helpers/custom-exceptions';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) { }
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -24,27 +28,43 @@ export class AuthService {
     if (!user) {
       throw new CustomUnauthorizedException('Invalid credentials');
     }
-    const payload = { email: user.email, sub: user.id, role: user.role };
-    const { password: _, ...loggedInUser } = user;
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'User login successful',
-      data: {
-        loggedInUser,
-        access_token: await this.jwtService.signAsync(payload),
-      },
-    };
+    try {
+      const payload = { email: user.email, sub: user.id, role: user.role };
+      const { password: _, ...loggedInUser } = user;
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'User login successful',
+        data: {
+          loggedInUser,
+          access_token: await this.jwtService.signAsync(payload),
+        },
+      };
+    } catch (error) {
+      this.logger.error(error);
+      throw new CustomInternalServerErrorException('Error during login');
+    }
+
   }
 
-  // async register(userData: Partial<User>) {
-  //   const { password, ...rest } = userData;
-  //   const hashedPassword = await bcrypt.hash(password, 10);
-  //   const newUser = this.userRepository.create({
-  //     ...rest,
-  //     password: hashedPassword,
-  //   });
-  //   await this.userRepository.save(newUser);
-  //   const { password: _, ...result } = newUser;
-  //   return result;
-  // }
+  async register(createUserDto: CreateUserDto): Promise<any> {
+    const existingUser = await this.userService.getUserByEmail(createUserDto.email);
+    if (existingUser) {
+      throw new CustomUnauthorizedException('Email already in use. Try another email');
+    }
+    try {
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+      const user = await this.userService.createUser({
+        ...createUserDto, password: hashedPassword,
+      });
+      const { password, ...result } = user;
+      return {
+        stausCode: HttpStatus.CREATED,
+        message: "Registration successful",
+        data: result,
+      }
+    } catch (error) {
+      throw new CustomInternalServerErrorException('Error during user registration');
+    }
+
+  }
 }
