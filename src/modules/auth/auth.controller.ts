@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, HttpCode } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 import { ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -17,6 +17,7 @@ export class AuthController {
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @ApiBody({type: CreateUserDto})
   @Post('register')
+  @HttpCode(201)
   async register(@Body() createUserDto: CreateUserDto){
     return this.authService.register(createUserDto)
   }
@@ -29,6 +30,7 @@ export class AuthController {
   @ApiOkResponse({ description: 'User login successful' })
   @ApiInternalServerErrorResponse({ description: 'Internal server error' })
   @Post('login')
+  @HttpCode(200)
   async login(@Request() req) {
     return this.authService.login(req.user);
   }

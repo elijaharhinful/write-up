@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { User } from "../entities/user.entity";
 
-export class UserResponseDto {
+export class GenericAuthResponseDto {
     @ApiProperty()
     statusCode: number;
 
@@ -9,5 +8,5 @@ export class UserResponseDto {
     message: string;
 
     @ApiProperty()
-    data: Partial<User>;
+    data: [];
 }

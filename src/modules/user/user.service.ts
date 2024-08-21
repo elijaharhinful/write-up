@@ -28,11 +28,15 @@ export class UserService {
     return user;
   }
 
-  updateUser(id: number, updateUserDto: UpdateUserDto) {
+  updateUser(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  removeUser(id: number) {
+  async updateUserPassword(userId: string, hashedPassword: string){
+    await this.userRepository.update(userId, {password: hashedPassword});
+  }
+
+  removeUser(id: string) {
     return `This action removes a #${id} user`;
   }
 }

@@ -17,6 +17,9 @@ import { AuthGuard } from './guards/auth.guard';
 import { JwtModule } from '@nestjs/jwt';
 import { WinstonModule } from 'nest-winston';
 import { loggerConfig } from './config/logger.config';
+import { EmailsModule } from './modules/emails/emails.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
 @Module({
   imports: [
@@ -45,6 +48,21 @@ import { loggerConfig } from './config/logger.config';
       inject: [ConfigService],
     }),
     WinstonModule.forRoot(loggerConfig),
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+        defaults: {
+          from: '"nest-modules" <modules@nestjs.com>',
+        },
+        template: {
+          dir: __dirname + '/templates',
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
     UserModule,
     SeederModule,
     BlogModule,
@@ -52,6 +70,7 @@ import { loggerConfig } from './config/logger.config';
     BlogCategoriesModule,
     BlogCommentsModule,
     AuthModule,
+    EmailsModule,
   ],
   controllers: [AppController],
   providers: [
