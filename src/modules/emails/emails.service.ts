@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import nodemailer, { Transporter } from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import { join } from 'path';
 
 @Injectable()
 export class EmailsService {
-  private transporter: Transporter;
+  private transporter: nodemailer.Transporter;
 
   constructor() {
+    this.initializeTransporter();
+  }
+
+  private initializeTransporter() {
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -32,12 +36,21 @@ export class EmailsService {
   private async renderTemplate(
     template: string,
     context: Record<string, any>,
-  ) : Promise<string>{
+  ): Promise<string> {
     const hbs = require('express-handlebars').create({
       extname: '.hbs',
-      layoutsDir: join(__dirname, 'templates'),
+      layoutsDir: join(
+        __dirname,
+        process.env.NODE_ENV === 'production' ? '../../templates' : 'templates',
+      ),
     });
-    const html = await hbs.render(template, context);
+    const templatePath = join(
+      __dirname,
+      process.env.NODE_ENV === 'production' ? '../../templates' : 'templates',
+      `${template}.hbs`,
+    );
+    console.log(templatePath);
+    const html = await hbs.render(templatePath, context);
     return html;
   }
 }

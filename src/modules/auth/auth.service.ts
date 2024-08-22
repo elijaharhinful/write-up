@@ -84,7 +84,8 @@ export class AuthService {
         { email: user.email, sub: user.id },
         { expiresIn: '1h' },
       );
-      const resetLink = `${process.env.BASE_URL}/reset-password/${resetToken}`;
+      const resetLink = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+
       await this.emailService.sendEmail(
         user.email,
         'Password Reset',
@@ -97,7 +98,7 @@ export class AuthService {
         data: [],
       };
     } catch (error) {
-      this.logger.error(error);
+      this.logger.error(error.stack);
       throw new CustomInternalServerErrorException('Error during password reset request');
     }
   }

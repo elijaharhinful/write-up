@@ -51,7 +51,7 @@ async function bootstrap() {
     app.get<ConfigService>(ConfigService).get<number>('PORT') || 3000;
   await app.listen(port);
 
-  logger.log('server started 🚀');
+  logger.log('Server started 🚀');
   logger.log(`Server URL: http://localhost:${port}/api/v1`);
   logger.log(`Swagger Docs URL: http://localhost:${port}/api/docs`);
 }
