@@ -39,17 +39,9 @@ export class EmailsService {
   ): Promise<string> {
     const hbs = require('express-handlebars').create({
       extname: '.hbs',
-      layoutsDir: join(
-        __dirname,
-        process.env.NODE_ENV === 'production' ? '../../templates' : 'templates',
-      ),
+      layoutsDir: join(__dirname,'templates'),
     });
-    const templatePath = join(
-      __dirname,
-      process.env.NODE_ENV === 'production' ? '../../templates' : 'templates',
-      `${template}.hbs`,
-    );
-    console.log(templatePath);
+    const templatePath = join(__dirname,'templates',`${template}.hbs`);
     const html = await hbs.render(templatePath, context);
     return html;
   }
