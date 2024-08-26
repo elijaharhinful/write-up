@@ -10,6 +10,17 @@ export const mockUser: Partial<User> = {
     isActive: true,
 };
 
+export const newMockUser = {
+  id: '2',
+  email: 'new@example.com',
+  password: 'Password',
+  role: UserRole.USER,
+  firstName: 'New',
+  lastName: 'User',
+  isActive: true,
+  phone: '1234567890',
+};
+
 export const mockJwtService = {
   signAsync: jest.fn(),
   verify: jest.fn(),
