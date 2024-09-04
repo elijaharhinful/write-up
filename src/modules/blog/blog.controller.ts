@@ -1,34 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, HttpStatus, Request } from '@nestjs/common';
 import { BlogService } from './blog.service';
-import { CreateBlogDto } from './dto/create-blog.dto';
-import { UpdateBlogDto } from './dto/update-blog.dto';
+import { CreateBlogDTO } from './dto/create-blog.dto';
+import { BlogResponseDTO } from './dto/blog-response-dto';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiInternalServerErrorResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Blogs')
 @Controller('blog')
 export class BlogController {
   constructor(private readonly blogService: BlogService) {}
 
   @Post()
-  create(@Body() createBlogDto: CreateBlogDto) {
-    return this.blogService.create(createBlogDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.blogService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.blogService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.blogService.remove(+id);
+  @ApiBearerAuth()
+  @ApiOperation({summary: "Create Blog"})
+  @ApiBody({type: CreateBlogDTO})
+  @ApiCreatedResponse({ description: 'Blog created successfully!', type: BlogResponseDTO })
+  @ApiBadRequestResponse({description: 'Bad Request.' })
+  @ApiInternalServerErrorResponse({description: 'Internal server error'})
+  create(@Body() createBlogDto: CreateBlogDTO, @Request() req): Promise<BlogResponseDTO> {
+    return this.blogService.createBlog(createBlogDto, req.user);
   }
 }

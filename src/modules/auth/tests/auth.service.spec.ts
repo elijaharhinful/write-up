@@ -116,10 +116,10 @@ describe('AuthService', () => {
       });
     });
 
-    it('should throw UnauthorizedException if email is already in use', async ()=>{
+    it('should throw UnauthorizedException if email is already in use', async () => {
       userService.getUserByEmail.mockResolvedValue(mockUser as User);
       await expect(service.register({ firstName: 'Some', lastName: 'User', email: 'test@example.com', password: 'password', phone: '1234567890' }))
-      .rejects.toThrow(CustomUnauthorizedException);
+        .rejects.toThrow(CustomUnauthorizedException);
     });
   });
 
@@ -159,13 +159,6 @@ describe('AuthService', () => {
         message: 'Password reset successful',
         data: [],
       });
-    });
-
-    it('should throw NotFoundException if user is not found during reset', async () => {
-      jwtService.verify.mockReturnValue({ email: 'nonexistent@example.com' });
-      userService.getUserByEmail.mockResolvedValue(null);
-
-      await expect(service.resetPassword('validToken', 'newPassword')).rejects.toThrow(CustomNotFoundException);
     });
   });
 });

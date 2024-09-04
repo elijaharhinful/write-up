@@ -36,7 +36,7 @@ export class Blog extends AbstractBaseEntity {
     @Column({ nullable: false, default: 0 })
     dislikes: number;
 
-    @Column({nullable: true})
+    @Column({nullable: true, default: false})
     isSeeded: boolean;
 
     @ManyToOne(() => User, user => user.blogs)
