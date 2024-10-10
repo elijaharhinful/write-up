@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateBlogDTO } from './dto/create-blog.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { BlogResponseDTO } from './dto/blog-response-dto';
 import { UserService } from '../user/user.service';
-import { CustomForbiddenException, CustomInternalServerErrorException, CustomNotFoundException } from '../../helpers/custom-exceptions';
+import { CustomBadRequestException, CustomForbiddenException, CustomInternalServerErrorException, CustomNotFoundException } from '../../helpers/custom-exceptions';
 import { Logger } from 'winston';
 import { UpdateBlogDTO } from './dto/update-blog.dto';
 import { UserDTO } from '../user/dto/user.dto';
@@ -104,6 +104,44 @@ export class BlogService {
     } catch (error) {
       this.logger.error(`Error while updating blog: ${error.stack}`);
       throw new CustomInternalServerErrorException('Error while updating blog');
+    }
+  }
+
+  async deleteBlog(currentUser: UserDTO, blogId: string, confirmed: boolean): Promise<{ statusCode: number; message: string }> {
+    try{
+      const user = await this.userService.getUserById(currentUser.sub);
+      if (!user){
+        throw new CustomNotFoundException('User');
+      }
+
+      const blog = await this.blogRepository.findOne({
+        where: {id: blogId},
+        relations: ['user', 'categories'],
+      });
+
+      if (!blog) {
+        throw new CustomNotFoundException('Blog');
+      }
+
+      if (blog.user.id !== user.id){
+        throw new CustomForbiddenException('You are not authorized to delete this blog')
+      }
+
+      if (!confirmed){
+        throw new CustomBadRequestException('Confirmation is required to delete the blog');
+      }
+  
+      blog.deletedAt = new Date();
+      await this.blogRepository.save(blog);
+    
+      return {
+        statusCode: HttpStatus.OK,
+        message: 'Blog deleted successfully',
+      }
+
+    } catch (error){
+      this.logger.error(`Error while deleting blog: ${error.stack}`);
+      throw new CustomInternalServerErrorException('Error while deleting blog');
     }
   }
 }

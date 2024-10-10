@@ -1,5 +1,5 @@
 import { AbstractBaseEntity } from "../../../entities/base.entity";
-import { Column, Entity, ManyToOne, OneToMany, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, JoinColumn, ManyToMany, JoinTable, DeleteDateColumn } from "typeorm";
 import { User } from "../../user/entities/user.entity";
 import { Comment } from "../../blog-comments/entities/blog-comment.entity";
 import { BlogCategory } from "../../blog-categories/entities/blog-category.entity";
@@ -45,6 +45,9 @@ export class Blog extends AbstractBaseEntity {
 
     @OneToMany(() => Comment, comment => comment.blog)
     comments: Comment[];
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @ManyToMany(() => BlogCategory)
     @JoinTable({

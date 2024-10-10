@@ -153,7 +153,7 @@ export class SeederService {
             return 'Database seeded successfully';
         } catch (error) {
             await queryRunner.rollbackTransaction();
-            this.logger.error(`Error while seeding database: ${error}`);
+            this.logger.error(`Error while seeding database: ${error.stack}`);
             throw new CustomInternalServerErrorException('Error while seeding database')
         } finally {
             await queryRunner.release();
